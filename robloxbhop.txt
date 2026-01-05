@@ -403,11 +403,12 @@ local function process(dt)
         if moveVector.Magnitude > 0 then
             input = moveVector
         end
-    else
-        if UserInputService:IsKeyDown(Enum.KeyCode.W) then input += fwd end
-        if UserInputService:IsKeyDown(Enum.KeyCode.S) then input -= fwd end
-        if UserInputService:IsKeyDown(Enum.KeyCode.A) then input -= right end
-        if UserInputService:IsKeyDown(Enum.KeyCode.D) then input += right end
+     else 
+        -- Added and not UserInputService:GetFocusedTextBox() to not drift away while typing
+        if UserInputService:IsKeyDown(Enum.KeyCode.W) and not UserInputService:GetFocusedTextBox() then input += fwd end
+        if UserInputService:IsKeyDown(Enum.KeyCode.S) and not UserInputService:GetFocusedTextBox() then input -= fwd end
+        if UserInputService:IsKeyDown(Enum.KeyCode.A) and not UserInputService:GetFocusedTextBox() then input -= right end
+        if UserInputService:IsKeyDown(Enum.KeyCode.D) and not UserInputService:GetFocusedTextBox() then input += right end 
     end
 
     if input.Magnitude > 0 then
@@ -450,9 +451,11 @@ local function process(dt)
 end
 
 UserInputService.InputBegan:Connect(function(i)
-    if i.KeyCode == Enum.KeyCode.Space then
+    -- same as 407 but with jumping
+    if i.KeyCode == Enum.KeyCode.Space and not UserInputService:GetFocusedTextBox() then
         spaceHeld = true
-    elseif i.KeyCode == Enum.KeyCode.X and scriptEnabled and not isMobile then
+    -- same as 407 but with the BOOM BOOM
+    elseif i.KeyCode == Enum.KeyCode.X and scriptEnabled and not isMobile and not UserInputService:GetFocusedTextBox() then
         local currentMode = gameModes[currentModeIndex]
         if currentMode == "no grenades (PC)" or currentMode == "no grenades (mobile)" or 
            currentMode == "hard (PC)" or currentMode == "hard (mobile)" then
@@ -535,9 +538,10 @@ UserInputService.InputBegan:Connect(function(i)
 end)
 
 UserInputService.InputEnded:Connect(function(i)
-    if i.KeyCode == Enum.KeyCode.Space then
+    -- same as 407 but with jumping
+    if i.KeyCode == Enum.KeyCode.Space and not UserInputService:GetFocusedTextBox() then
         spaceHeld = false
-    end
+        end
 end)
 
 RunService.Heartbeat:Connect(function(dt)
